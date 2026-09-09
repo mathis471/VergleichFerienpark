@@ -1,0 +1,1 @@
+import type {SearchResult} from '../../lib/types'; import ParkCard from './ParkCard'; export default function ParkGrid({results}:{results:SearchResult[]}){return <div className="grid gap-5 lg:grid-cols-2">{results.map(r=><ParkCard key={r.park.id+r.accommodation.id} result={r}/>)}</div>}

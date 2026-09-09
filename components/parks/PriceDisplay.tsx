@@ -1,0 +1,1 @@
+import {eur} from '../../lib/utils/format'; export default function PriceDisplay({price}:{price:number}){return <div><div className="text-xs text-slate-500">Preis für die Demo-Suche</div><div className="text-2xl font-black text-slate-900">{eur(price)}</div></div>}

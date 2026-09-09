@@ -1,0 +1,1 @@
+export default function Impressum(){return <main className="container-page max-w-3xl py-12"><h1 className="text-3xl font-black">Impressum</h1><p className="mt-4 rounded-2xl border bg-amber-50 p-4 text-sm text-amber-900">Platzhalter: Vor Veröffentlichung müssen vollständige Anbieterangaben und ein rechtlich geprüfter Impressumstext ergänzt werden.</p></main>}

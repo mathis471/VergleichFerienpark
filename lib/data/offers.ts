@@ -1,0 +1,2 @@
+import type { Offer } from '../types'; import { parks } from './parks'
+export const offers: Offer[] = parks.flatMap((p,pi)=>p.accommodations.map((a,ai)=>{const base=899+pi*37+ai*180; return {id:`offer-${p.id}-${ai}`,parkId:p.id,accommodationId:a.id,arrival:'2027-07-10',departure:'2027-07-17',guests:4,pets:0,basePrice:base,cleaningFee:79,bookingFee:25,petFee:0,touristTax:35,optionalFees:0,totalPrice:base+139,currency:'EUR',availability:true,source:'demo',isTestData:true}}))

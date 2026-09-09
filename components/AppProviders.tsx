@@ -1,0 +1,5 @@
+'use client'; import {createContext,useContext,useEffect,useMemo,useState} from 'react'; import {readList,writeList} from '../lib/utils/storage'
+type Ctx={favorites:string[];compare:string[];toggleFavorite:(id:string)=>void;toggleCompare:(id:string)=>void}
+const AppContext=createContext<Ctx|null>(null)
+export function AppProviders({children}:{children:React.ReactNode}){const [favorites,setFavorites]=useState<string[]>([]),[compare,setCompare]=useState<string[]>([]);useEffect(()=>{setFavorites(readList('fp-favorites'));setCompare(readList('fp-compare'))},[]);const toggleFavorite=(id:string)=>setFavorites(v=>{const n=v.includes(id)?v.filter(x=>x!==id):[...v,id];writeList('fp-favorites',n);return n});const toggleCompare=(id:string)=>setCompare(v=>{const n=v.includes(id)?v.filter(x=>x!==id):v.length>=4?v:[...v,id];writeList('fp-compare',n);return n});return <AppContext.Provider value={{favorites,compare,toggleFavorite,toggleCompare}}>{children}</AppContext.Provider>}
+export const useApp=()=>{const c=useContext(AppContext);if(!c)throw new Error('useApp outside AppProviders');return c}

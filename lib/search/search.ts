@@ -1,0 +1,10 @@
+import type { Park, SearchFilters, SearchResult, SortOption, Offer, Accommodation } from '../types'; import { offers } from '../data/offers'
+const text=(v:string)=>v.trim().toLowerCase()
+export function calculateValueScore(r:Pick<SearchResult,'park'|'offer'>){const facilityPoints=r.park.facilities.length*1.8; const priceFactor=r.offer.totalPrice/100; const beach=r.park.beachDistanceKm*0.9; return Number((r.park.rating*20+facilityPoints-priceFactor-beach).toFixed(1))}
+export function filterParks(parks:Park[], filters:SearchFilters):SearchResult[]{return parks.flatMap(park=>{
+ const destination=text(filters.destination); if(destination && ![park.country,park.region,park.city,park.name].some(x=>text(x).includes(destination))) return []
+ if(filters.country && park.country!==filters.country) return []; if(filters.region && park.region!==filters.region) return []; if(park.rating<filters.minRating || park.beachDistanceKm>filters.maxBeachDistance || (filters.pets>0&&!park.petsAllowed)) return []
+ if(filters.facilities.some(f=>!park.facilities.includes(f))) return []
+ return park.accommodations.flatMap(a=>{if(a.maxPersons<filters.adults+filters.children+filters.babies || (filters.pets>0&&!a.petsAllowed)) return []; if(filters.accommodationTypes.length&&!filters.accommodationTypes.includes(a.type)) return []; const offer=offers.find(o=>o.parkId===park.id&&o.accommodationId===a.id); if(!offer||!offer.availability||offer.totalPrice>filters.maxPrice||offer.totalPrice<filters.minPrice) return []; return [{park,offer,accommodation:a,valueScore:calculateValueScore({park,offer})}]})})}
+export function sortParks(results:SearchResult[],sort:SortOption){return [...results].sort((a,b)=>sort==='price-asc'?a.offer.totalPrice-b.offer.totalPrice:sort==='price-desc'?b.offer.totalPrice-a.offer.totalPrice:sort==='rating'?b.park.rating-a.park.rating:sort==='beach'?a.park.beachDistanceKm-b.park.beachDistanceKm:sort==='value'?b.valueScore-a.valueScore:b.park.rating*10+b.valueScore-(a.park.rating*10+a.valueScore))}
+export function searchParks(filters:SearchFilters,parks:Park[],sort:SortOption='recommended'){return sortParks(filterParks(parks,filters),sort)}
